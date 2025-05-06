@@ -1,7 +1,7 @@
 DELAY 1000
 GUI r
 DELAY 500
-STRING powershell -w hidden
+STRING powershell
 ENTER
 DELAY 500
 
